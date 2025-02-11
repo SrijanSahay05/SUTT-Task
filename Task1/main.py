@@ -4,6 +4,12 @@ import json
 mess_menu_df = pd.read_excel("Mess Menu Sample.xlsx", sheet_name="Sheet1")
 mess_menu_json = {}
 
+def format_cell_value(cell_value):
+    if isinstance(cell_value, str):
+        if set(cell_value.strip()) == {"*"}:
+            return ""
+        cell_value = " ".join(cell_value.split())
+    return cell_value
 
 def daily_menu(df):
     for col in range(df.shape[1]):
@@ -16,25 +22,30 @@ def daily_menu(df):
 
         for item in range(2, 11):
             cell_value = df.iloc[item, col]
+            cell_value = format_cell_value(cell_value)
             if pd.isna(cell_value) or cell_value == "":
-                break
+                cell_value = ""
             else:
                 breakfast_items.append(cell_value)
         daily_menu["Breakfast"] = breakfast_items
 
         for item in range(13, 21):
             cell_value = df.iloc[item, col]
+            cell_value = format_cell_value(cell_value)
             if pd.isna(cell_value) or cell_value == "":
-                break
+                cell_value = ""
             else:
+                cell_value = format_cell_value(cell_value)
                 lunch_items.append(cell_value)
         daily_menu["Lunch"] = lunch_items
 
         for item in range(23, 30):
             cell_value = df.iloc[item, col]
+            cell_value = format_cell_value(cell_value)
             if pd.isna(cell_value) or cell_value == "":
-                break
+                cell_value = ""
             else:
+                cell_value= format_cell_value(cell_value)
                 dinner_items.append(cell_value)
         daily_menu["Dinner"] = dinner_items
 
@@ -51,4 +62,3 @@ def export_json(json_file):
 
 print(daily_menu(mess_menu_df))
 export_json(mess_menu_json)
-
