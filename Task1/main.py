@@ -1,10 +1,14 @@
 import pandas as pd
 import json
 
-mess_menu_df = pd.read_excel("Mess Menu Sample.xlsx", sheet_name="Sheet1")
+mess_menu_df = pd.read_excel("Mess Menu Sample.xlsx", sheet_name="Sheet1") # Importing the excel file as a pandas datafram
 mess_menu_json = {}
 
 def format_cell_value(cell_value):
+    '''
+    Function to format the cell value, like removing cell values witjh 
+    only "*" and removing extra spaces between dish names
+    '''
     if isinstance(cell_value, str):
         if set(cell_value.strip()) == {"*"}:
             return ""
@@ -12,6 +16,18 @@ def format_cell_value(cell_value):
     return cell_value
 
 def daily_menu(df):
+    '''
+    Function to extract the daily menu from the dataframe,
+    and store it in a dictionary with the date as the key
+
+    a loop runs over each column of the dataframe, and extracts the date (using the first row of the column)
+    and the menu items for breakfast, lunch and dinner. 
+    since the excel was in a format with exact number of rows from where different meal menu started, 
+    I used the row numbers to extract the menu items for each meal.
+    
+    also there is a condition checking if the excel cell is empty, it it is then nothing is appened to the list, 
+    before appending the menu format_cell_value is being called to remove extra spacing or unwanted entries such as "*".
+    '''
     for col in range(df.shape[1]):
         daily_menu = {}
         breakfast_items = []
@@ -56,6 +72,9 @@ def daily_menu(df):
 
 
 def export_json(json_file):
+    '''
+    function to export the dictionary to a json file
+    '''
     with open("mess_menu.json", "w") as json_file:
         json.dump(mess_menu_json, json_file, indent=4)
 
